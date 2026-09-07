@@ -1,0 +1,20 @@
+# ambiente Python do MCP (recriar: python3 -m venv mcp/.venv && mcp/.venv/bin/pip install -r mcp/requirements.txt)
+mcp/.venv/
+__pycache__/
+*.pyc
+# índice vetorial gerado (recriar: python3 mcp/index.py)
+knowledge/.index.db
+# sistema
+.DS_Store
+
+# gerados por install.sh a partir de templates/
+launchd/*.plist
+.mcp.json
+
+# artefatos brutos das evals (transcritos completos, código de projetos-cliente, caminhos locais)
+# os resumos ficam em evals/results.md e evals/results/replays.md
+evals/results/*/
+evals/results/*.console.log
+
+# tarefas de eval reais (cards de projeto-cliente: specs, rotas, SHAs). Publicado: só EXEMPLO.*
+evals/coding/tarefas/LUM-*

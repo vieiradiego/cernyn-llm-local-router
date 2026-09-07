@@ -1,0 +1,23 @@
+// Workspace do EXECUTOR local: abrir este arquivo no VS Code faz a extensão
+// Claude Code falar com o LM Studio (qwen3.8-27b) em vez da nuvem.
+// Escopo de workspace de propósito — NUNCA copiar estas settings para o user
+// settings.json, senão as sessões de planejamento (Fable/Opus) também são
+// redirecionadas.
+{
+  "folders": [
+    { "path": ".." }
+    // Adicione os repos-alvo do executor aqui, ex.: { "path": "../../meu-projeto" }
+  ],
+  "settings": {
+    "claudeCode.environmentVariables": [
+      { "name": "ANTHROPIC_BASE_URL", "value": "http://localhost:1234" },
+      { "name": "ANTHROPIC_AUTH_TOKEN", "value": "lmstudio" },
+      { "name": "ANTHROPIC_MODEL", "value": "qwen3.8-27b" },
+      { "name": "ANTHROPIC_SMALL_FAST_MODEL", "value": "qwen3.8-27b" },
+      { "name": "ANTHROPIC_DEFAULT_OPUS_MODEL", "value": "qwen3.8-27b" },
+      { "name": "ANTHROPIC_DEFAULT_SONNET_MODEL", "value": "qwen3.8-27b" },
+      { "name": "ANTHROPIC_DEFAULT_HAIKU_MODEL", "value": "qwen3.8-27b" },
+      { "name": "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS", "value": "1" }
+    ]
+  }
+}

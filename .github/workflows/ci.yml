@@ -1,0 +1,22 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: shell syntax
+        run: for f in bin/*.sh bin/claude-local install.sh uninstall.sh evals/*.sh tests/*.sh; do sh -n "$f"; done
+      - name: python compile
+        run: python -m py_compile router/router.py mcp/index.py mcp/server.py mcp/web_server.py evals/mem-peak.py
+      - name: router smoke test (fake upstreams, no models)
+        run: tests/smoke.sh
+      - name: plist templates render
+        run: |
+          mkdir -p /tmp/l && for t in templates/*.plist.tpl; do sed "s|__REPO__|$PWD|g; s|__HOME__|$HOME|g" "$t" > /tmp/l/$(basename "$t" .tpl); done
+          python - <<'PY'
+          import plistlib, glob
+          for f in glob.glob('/tmp/l/*.plist'): plistlib.load(open(f,'rb')); print('ok', f)
+          PY

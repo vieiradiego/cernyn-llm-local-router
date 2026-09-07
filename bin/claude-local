@@ -1,0 +1,31 @@
+#!/bin/sh
+# Launcher do EXECUTOR local: abre o Claude Code apontando para o LM Studio.
+#
+# Regra da arquitetura: planejamento é sempre Opus/Fable na nuvem (claude normal);
+# este launcher serve só para EXECUTAR um plano já escrito em docs/plans/<tarefa>.md.
+# Por isso as variáveis vivem aqui, e NUNCA em .claude/settings.json — lá elas
+# redirecionariam também as sessões de planejamento.
+#
+# Uso: bin/claude-local  (e dentro da sessão: "implemente docs/plans/<tarefa>.md")
+
+set -eu
+
+# Nome do modelo como o LM Studio o expõe; confira com: curl -s localhost:1234/v1/models
+MODEL="${LOCAL_MODEL:-qwen3.8-27b}"
+
+# Falha cedo se o servidor não estiver de pé — melhor que um timeout confuso no meio da sessão.
+if ! curl -sf --max-time 3 "http://localhost:1234/v1/models" >/dev/null 2>&1; then
+    echo "erro: LM Studio não responde em localhost:1234 — rode bin/serve.sh primeiro" >&2
+    exit 1
+fi
+
+ANTHROPIC_BASE_URL="http://localhost:1234" \
+ANTHROPIC_API_KEY="lmstudio" \
+ANTHROPIC_AUTH_TOKEN="lmstudio" \
+ANTHROPIC_MODEL="$MODEL" \
+ANTHROPIC_SMALL_FAST_MODEL="$MODEL" \
+ANTHROPIC_DEFAULT_OPUS_MODEL="$MODEL" \
+ANTHROPIC_DEFAULT_SONNET_MODEL="$MODEL" \
+ANTHROPIC_DEFAULT_HAIKU_MODEL="$MODEL" \
+CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS="1" \
+exec claude "$@"
