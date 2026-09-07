@@ -70,23 +70,23 @@ O instalador gera os arquivos de serviço a partir de `templates/`, cria o ambie
 ### 4. Crie as variantes de raciocínio
 
 ```bash
-GGUF=$(ls ~/.lmstudio/models/unsloth/qwen3.8-27b/*.gguf | head -1)
+GGUF=~/.lmstudio/models/unsloth/Qwen3.8-27B-GGUF/Qwen3.8-27B-GGUF-UD-Q4_K_S.gguf
 for m in nothink low base; do
   bin/gguf-variant.sh "$GGUF" $m ~/.lmstudio/models/local-llm/Qwen3.8-27B-GGUF-$m
 done
-lms ls   # anote os nomes que aparecem: são eles que você digita no /model
+lms ls   # as variantes aparecem como qwen3.8-27b-nothink@q4_k_s, qwen3.8-27b-low@q4_k_s, qwen3.8-27b-base
 ```
 
-Cada variante ocupa cerca de 16 GB em disco e aparece como um modelo separado. O script também corrige o template para aceitar a mensagem `system` que o Claude Code envia depois do turno do usuário e que o llama.cpp rejeitaria.
+Cada variante ocupa cerca de 16 GB em disco e aparece como um modelo separado. O nome que o `lms ls` mostra é o que você digita no `/model`. Se preferir nomes curtos, carregue uma vez com identificador próprio, por exemplo `lms load qwen3.8-27b-nothink@q4_k_s --identifier qwen3.8-27b-gguf-nothink -c 131072 --parallel 1`; é o que o harness de avaliação faz. O script também corrige o template para aceitar a mensagem `system` que o Claude Code envia depois do turno do usuário e que o llama.cpp rejeitaria.
 
 ### 5. Aponte o VS Code e troque de modelo
 
 Na extensão Claude Code, em *Settings → Environment Variables*, adicione `ANTHROPIC_BASE_URL` = `http://localhost:4000` e recarregue a janela. Na conversa de sempre:
 
 ```
-/model qwen3.8-27b-gguf-nothink    # executor local, padrão (o nome exato vem do lms ls)
-/model qwen3.8-27b-gguf-low        # raciocínio breve, para decisões de arquitetura
-/model claude-fable-5-1            # volta para a nuvem
+/model qwen3.8-27b-nothink@q4_k_s   # executor local, padrão (nome exato: lms ls)
+/model qwen3.8-27b-low@q4_k_s       # raciocínio breve, para decisões de arquitetura
+/model claude-fable-5-1             # volta para a nuvem
 ```
 
 A primeira resposta local leva de 1 a 2 minutos (carga do modelo e prefill). As seguintes usam cache. Para subir a stack no dia a dia: `bin/serve.sh` (perfil dev) ou `bin/serve.sh --atendimento` (carrega o Gemma).
